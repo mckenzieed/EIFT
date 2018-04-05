@@ -6,6 +6,7 @@ apiKey = '2b7d70632f0149b4b8e38e5ade0aa88e'
 def get_news_articles(keyword, domains, date_from, date_to, sort_by):
     """
     Gets all news articles based on the arguments provided.
+
     :param keyword: Articles retrieved will be based on this keyword.
     :param domains: Sources to retrieve articles from.
     :param date_from: Articles that were written on or after this date are retrieved.
@@ -30,6 +31,7 @@ def get_news_articles(keyword, domains, date_from, date_to, sort_by):
 def get_news_articles_by_language(keyword, domains, date_from, date_to, language, sort_by):
     """
     Gets all news articles based on the arguments provided, including the language.
+    
     :param keyword: Articles retrieved will be based on this keyword.
     :param domains: Sources to retrieve articles from.
     :param date_from: Articles that were written on or after this date are retrieved.
