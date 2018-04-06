@@ -16,15 +16,3 @@ EIFT API Reference
 .. automodule:: api
    :members:
 
-Retrieving articles
--------------------
-
-.. automodule:: api.get_news_articles
-   :members:
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

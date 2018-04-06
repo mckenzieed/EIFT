@@ -5,11 +5,14 @@ pushd %~dp0
 REM Command file for Sphinx documentation
 
 if "%SPHINXBUILD%" == "" (
-	set SPHINXBUILD=sphinx-build
+    echo.%SPHINXBUILD%
+	set SPHINXBUILD=venv\scripts\sphinx-build
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=EIFT
+set SPHINXPROJ=eift
+
+echo.%SPHINXBUILD%
 
 if "%1" == "" goto help
 

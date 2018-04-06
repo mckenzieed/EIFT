@@ -1,0 +1,11 @@
+{
+  "VARIABLES": {
+    "API_KEY": "2b7d70632f0149b4b8e38e5ade0aa88e"
+  },
+  "DBVARIABLES": {
+    "USER": "eift_user",
+    "PASSWORD": "test1234*",
+    "HOST": "127.0.0.1",
+    "DATABASE": "eift_articles"
+  }
+}
