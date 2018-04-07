@@ -9,7 +9,7 @@ def get_news_articles():
         "user": settings.CONFIG["DBVARIABLES"]["USER"],
         "password": settings.CONFIG["DBVARIABLES"]["PASSWORD"],
         "host": settings.CONFIG["DBVARIABLES"]["HOST"],
-        "database": settings.CONFIG["DBVARIABLES"]["HOST"]
+        "database": settings.CONFIG["DBVARIABLES"]["HOST"] 
     }
 
     conn.connect(**credentials)
