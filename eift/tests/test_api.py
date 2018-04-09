@@ -1,16 +1,19 @@
-import eift.core.get_news_articles
+import eift.core.news_api.news_api as news_api
 from datetime import datetime, timedelta
+from eift import settings
+import os
 
 
 def test_get_news_articles():
     """
-    As long as this returns something, the test will pass. If something is wrong with the
-    url, then response should come back null. No easy way to test this.
+    We want this to return a status of "ok" so that we know the query was successful
     """
-    response = eift.core.get_news_articles.get_news_articles('Apple', 'cnn.com, techcrunch.com',
-                                                             datetime.strftime(datetime.now() - timedelta(1),
-                                                                               '%Y-%m-%d'),
-                                                             datetime.today().strftime('%Y-%m-%d'),
-                                                             'popularity')
+    settings.init(os.path.abspath("eift\\dev_config.json"))
 
-    assert response is not None
+    response = news_api.get_news_articles('Apple',
+                                          datetime.strftime(datetime.now() - timedelta(1),
+                                                            '%Y-%m-%d'),
+                                          datetime.today().strftime('%Y-%m-%d'),
+                                          'popularity')
+
+    assert response['status'] == 'ok'
