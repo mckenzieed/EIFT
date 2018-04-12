@@ -1,5 +1,4 @@
-from eift.core.models import article
-from eift.core.models import article_source
+from eift.core.models.article import article, article_source
 
 
 class ArticleResponse:

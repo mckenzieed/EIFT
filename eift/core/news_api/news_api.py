@@ -1,6 +1,7 @@
 import requests
 from eift import settings
-from eift.core.models import article_response, source_response
+from eift.core.models.source import source_response
+from eift.core.models.article import article_response
 
 
 def get_news_articles(date_from, date_to, sort_by):
@@ -63,7 +64,7 @@ def get_news_articles_by_domains(keyword, domains, date_from, date_to, sort_by):
     :return: List of articles retrieved in JSON form.
     """
 
-    api_key = settings.CONFIG["VARIABLES"]["API_KEY"]
+    api_key = settings.VARIABLES["api_key"]
     url = ('https://newsapi.org/v2/everything?'
            f'q={keyword}&'
            f'domains={domains}'
@@ -91,7 +92,7 @@ def get_news_articles_by_language(keyword, domains, date_from, date_to, language
     :return: List of articles retrieved in JSON form.
     """
 
-    api_key = settings.CONFIG["VARIABLES"]["API_KEY"]
+    api_key = settings.VARIABLES["api_key"]
     url = ('https://newsapi.org/v2/sources?'
            f'q={keyword}&'
            f'domains={domains}'
@@ -114,7 +115,7 @@ def get_sources():
         :return: List of sources retrieved in JSON form.
     """
 
-    api_key = settings.CONFIG["VARIABLES"]["API_KEY"]
+    api_key = settings.VARIABLES["api_key"]
     url = ('https://newsapi.org/v2/sources?'
            f'language=en&'
            f'apiKey={api_key}')

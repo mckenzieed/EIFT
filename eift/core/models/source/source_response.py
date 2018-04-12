@@ -1,4 +1,4 @@
-from eift.core.models import source
+from eift.core.models.source import source
 
 
 class SourceResponse:

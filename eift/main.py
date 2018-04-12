@@ -14,9 +14,11 @@ def main():
 
     #response = news_api.get_sources()
 
-    news_article_sources.NewsSources.insert_sources()
+    news_article_sources.NewsSources.set_sources_inactive()
 
-    #print(response.articles[0].source['name'])
+    #response = news_article_sources.NewsSources.get_all_sources()
+
+    #print(response)
 
 
 main()

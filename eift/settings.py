@@ -8,6 +8,11 @@ def init(file_path):
     :param file_path: Path to config file to use for this environment. dev_config.json for dev and prod_config.json
     for production environment
     """
-    global CONFIG
+    global EIFT_ARTICLES_CONNECTION
+    global VARIABLES
     with open(file_path, 'r') as file:
-        CONFIG = json.load(file)
+        config = json.load(file)
+
+    VARIABLES = dict(api_key=config["VARIABLES"]["API_KEY"])
+    EIFT_ARTICLES_CONNECTION = dict(user=config["DBVARIABLES"]["USER"], password=config["DBVARIABLES"]["PASSWORD"],
+                                    host=config["DBVARIABLES"]["HOST"], database=config["DBVARIABLES"]["DATABASE"])

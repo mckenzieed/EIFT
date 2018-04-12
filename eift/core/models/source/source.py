@@ -2,7 +2,8 @@ class Source:
     """A class representing a news source (cnn.com, abcnews.com, etc.)"""
 
     def __init__(self, source_id, name, description, url, category, language, country, active):
-        """Initialize an article.
+        """
+        Initialize an article.
 
         :param source_id: The id of the source (usually its name).
         :param name: The name of the source (usually not much different from id).
