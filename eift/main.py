@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from eift import settings
 import eift.core.database as db_api
 from eift.core.news_api import news_api
-from eift.core.database import news_article_sources
+from eift.core.database import news_articles
 
 
 def main():
@@ -14,7 +14,13 @@ def main():
 
     #response = news_api.get_sources()
 
-    news_article_sources.NewsSources.set_sources_inactive()
+    #response = news_api.get_news_articles(datetime.now() - timedelta(1), datetime.now(), "abcnews.com", "popularity")
+    #print(len(response.articles))
+
+    news_articles.NewsArticles.insert_articles()
+
+    # date_time = "2016-05-05T19:05:05Z"
+    # parsed = datetime.strptime("%Y-%m")
 
     #response = news_article_sources.NewsSources.get_all_sources()
 

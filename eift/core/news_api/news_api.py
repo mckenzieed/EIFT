@@ -1,5 +1,7 @@
 import requests
+import json
 from eift import settings
+from eift.core.database.news_article_sources import NewsSources
 from eift.core.models.source import source_response
 from eift.core.models.article import article_response
 
@@ -10,21 +12,46 @@ def get_news_articles(date_from, date_to, sort_by):
 
     :param date_from: Articles that were written on or after this date are retrieved.
     :param date_to: Articles that were written on or before this date are retrieved.
+    :param domain: The domain to query.
     :param sort_by: How articles are sorted. (relevancy, popularity, publishedAt)
     :return: List of articles retrieved in JSON form.
     """
 
-    api_key = settings.CONFIG["VARIABLES"]["API_KEY"]
+    api_key = settings.VARIABLES["api_key"]
+    source_list = NewsSources.get_all_sources()
+    source_name_list = NewsSources.get_source_name_list(source_list)
     url = ('https://newsapi.org/v2/everything?'
            f'from={date_from}&'
            f'to={date_to}&'
+           f'sources={source_name_list}&'
            f'sort_by={sort_by}&'
+           f'language=en&'
+           f'pageSize=100&'
            f'apiKey={api_key}')
-
     response = requests.get(url).json()
-    new_articles_response = article_response.ArticleResponse(response['status'], response['articles'])
+    total_results = response['totalResults']
+    article_list = [response['articles']]
+    page_number = 2
+    while page_number < total_results / 100:
+        url = ('https://newsapi.org/v2/everything?'
+               f'from={date_from}&'
+               f'to={date_to}&'
+               f'sources={source_name_list}&'
+               f'sort_by={sort_by}&'
+               f'language=en&'
+               f'pageSize=100&'
+               f'page={page_number}&'
+               f'apiKey={api_key}')
 
-    return new_articles_response
+        response = requests.get(url).json()
+        article_list.append(response['articles'])
+        page_number += 1
+
+    new_articles_response_list = []
+    for articles in article_list:
+        new_articles_response_list.append(article_response.ArticleResponse(response['status'], articles))
+
+    return new_articles_response_list
 
 
 def get_news_articles_with_keyword(keyword, date_from, date_to, sort_by):

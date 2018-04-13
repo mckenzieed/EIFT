@@ -20,7 +20,7 @@ class NewsSources:
 
             query = ("SELECT id, source_id, name, description, url, category, language, country, active "
                      "FROM article_sources "
-                     "WHERE active = 1 "
+                     "WHERE active = 1 AND language = 'en' "
                      "ORDER BY source_id")
 
             cursor.execute(query)
@@ -148,3 +148,15 @@ class NewsSources:
 
         except db_connection.Error as err:
             print(err)
+
+    @staticmethod
+    def get_source_name_list(list_of_sources):
+        source_list_to_return = []
+        for source_obj in list_of_sources:
+            if "https" in source_obj.url:
+                source_url = source_obj.url[8:]
+            else:
+                source_url = source_obj.url[7:]
+            source_list_to_return.append(source_url)
+
+        return ','.join(map(str, source_list_to_return))

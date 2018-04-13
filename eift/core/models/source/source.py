@@ -1,3 +1,6 @@
+import re
+
+
 class Source:
     """A class representing a news source (cnn.com, abcnews.com, etc.)"""
 

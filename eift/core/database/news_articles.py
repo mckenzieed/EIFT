@@ -1,6 +1,7 @@
 import mysql.connector as db_connection
 from datetime import datetime, timedelta
 from eift import settings
+from eift.core.database.news_article_sources import NewsSources
 from eift.core.database.models import meta_article
 from eift.core.news_api import news_api
 
@@ -36,7 +37,6 @@ class NewsArticles:
             return article_list
         except db_connection.Error as err:
             print(err)
-
 
     @staticmethod
     def get_news_articles_from(date_from, date_to):
@@ -111,12 +111,12 @@ class NewsArticles:
 
     @staticmethod
     def insert_articles():
-        """Insert new round of articles (to be ran every so often to keep database updated)"""
+        """Used to insert initial round of article insertions. Running more than once will result in duplicates."""
 
         datetime_now = datetime.now()
-        last_hour = datetime_now - timedelta(hours=1)
+        last_hour = datetime_now - timedelta(minutes=10)
 
-        article_list = news_api.get_news_articles(last_hour, datetime_now, "publishedAt")
+        article_response_list = news_api.get_news_articles(last_hour, datetime.now(), "popularity")
 
         try:
             conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
@@ -124,12 +124,99 @@ class NewsArticles:
 
             query = ("INSERT INTO article_collection "
                      "(source, author, title, description, url, urlToImage, datePublished) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s")
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
-            for (article_object) in article_list:
-                cursor.execute(query, (article_object.source, article_object.author, article_object.title,
-                                       article_object.description, article_object.url, article_object.url_to_image,
-                                       article_object.date_published))
+            for article_response in article_response_list:
+                for article in article_response.articles:
+                    try:
+                        cursor.execute(query, (article.source.name, article.author, article.title,
+                                               article.description, article.url, article.url_to_image,
+                                               datetime.strptime(article.date_published, "%Y-%m-%dT%H:%M:%SZ")))
+                    except:
+                        pass
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+        except db_connection.Error as err:
+            print(err)
+
+    @staticmethod
+    def insert_new_articles():
+        """Insert new round of sources (to be ran every so often to keep database updated)"""
+
+        source_list_from_api = news_api.get_sources()
+        source_list_in_database = NewsSources.get_all_sources()
+        sources_to_insert = source_helpers.get_sources_to_insert(source_list_from_api, source_list_in_database)
+
+        try:
+            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
+            cursor = conn.cursor()
+
+            query = ("INSERT INTO article_sources "
+                     "(source_id, name, description, url, category, language, country, active) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+
+            for source_to_insert in sources_to_insert:
+                cursor.execute(query, (source_to_insert.source_id, source_to_insert.name, source_to_insert.description,
+                                       source_to_insert.url, source_to_insert.category, source_to_insert.language,
+                                       source_to_insert.language, source_to_insert.country, 1))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+        except db_connection.Error as err:
+            print(err)
+
+    @staticmethod
+    def update_articles():
+        """To be ran once to initialize eift_sources table in the eift_articles database"""
+
+        news_sources_from_api = news_api.get_sources()
+
+        try:
+            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
+            cursor = conn.cursor()
+
+            query = ("INSERT INTO article_sources "
+                     "(source_id, name, description, url, category, language, country, active) "
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+
+            for entry in news_sources_from_api.sources:
+                new_source = (entry.source_id, entry.name, entry.description, entry.url, entry.category,
+                              entry.language, entry.country, entry.active)
+                cursor.execute(query, new_source)
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+        except (db_connection.Error, RuntimeError, TypeError, NameError) as err:
+            print(err)
+
+    @staticmethod
+    def set_article_inactive():
+        """Set any article to inactive in case they are revoked by the source."""
+
+        source_list_from_api = news_api.get_sources()
+        source_list_in_database = NewsSources.get_all_sources()
+        sources_to_set_inactive = source_helpers.get_sources_to_set_inactive(source_list_from_api,
+                                                                             source_list_in_database)
+
+        try:
+            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
+            cursor = conn.cursor()
+
+            query = ("UPDATE article_sources "
+                     "SET active = 0 "
+                     "WHERE id = %s")
+
+            # The value here has to be a tuple, which is what the weird "," is doing there after the id is inserted
+            # into the query. If you don't put that, it comes back as a syntax error. SQL Injection related?
+            for source_to_set_inactive in sources_to_set_inactive:
+                cursor.execute(query, (source_to_set_inactive,))
 
             conn.commit()
             cursor.close()
