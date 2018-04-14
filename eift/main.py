@@ -17,6 +17,7 @@ def main():
     #response = news_api.get_news_articles(datetime.now() - timedelta(1), datetime.now(), "abcnews.com", "popularity")
     #print(len(response.articles))
 
+
     news_articles.NewsArticles.insert_articles()
 
     # date_time = "2016-05-05T19:05:05Z"

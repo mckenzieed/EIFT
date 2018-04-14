@@ -116,6 +116,9 @@ class NewsArticles:
         datetime_now = datetime.now()
         last_hour = datetime_now - timedelta(minutes=10)
 
+        api_key = settings.VARIABLES["api_key"]
+        source_list = NewsSources.get_all_sources()
+        source_name_list = NewsSources.get_source_name_list(source_list)
         article_response_list = news_api.get_news_articles(last_hour, datetime.now(), "popularity")
 
         try:
