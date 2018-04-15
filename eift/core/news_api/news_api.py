@@ -3,6 +3,47 @@ import json
 from eift import settings
 from eift.core.database.news_article_sources import NewsSources
 from eift.core.models.source import source_response
+
+
+def get_news_articles_top_headlines(api_key, country='us', category=None, sources=None, keyword=None, page_size=None,
+                                    page=None):
+    """
+    Gets all news articles based on the arguments provided.
+
+    :param api_key: Required to query.
+    :param country: Country the articles were published in. Cannot be used if 'sources' is used.
+    :param category: The category to get headlines for. Choices are 'business', 'entertainment', 'general', 'health',
+    'science', 'sports', 'technology' Cannot be used if 'sources' is used.
+    :param sources: Articles written by these sources are brought back. Cannot be used with 'category' or 'country'.
+    :param keyword: Bring back articles containing this keyword.
+    :param page_size: How many pages of articles to bring back. Default is 20, max is 100.
+    :param page: Which page of the 1-100 page_size pages to bring back.
+
+    :return: List of articles retrieved in JSON form.
+    """
+
+    # Build the initial url.
+    url = build_url(api_key, keyword, sources, domains, date_from, date_to, language, sort_by, page_size, page)
+
+    response = requests.get(url).json()
+    total_results = response['totalResults']
+    article_list = [response['articles']]
+    page += 1
+    num_pages = total_results / 100
+    while page < num_pages:
+        # Rebuild the url with the new page size.
+        url = build_url(api_key, keyword, sources, domains, date_from, date_to, language, sort_by, page_size, page)
+        response = requests.get(url).json()
+        article_list.append(response['articles'])
+        page += 1
+
+    new_articles_response_list = []
+    for articles in article_list:
+        new_articles_response_list.append(article_response.ArticleResponse(response['status'], articles))
+
+    return new_articles_response_list
+
+
 from eift.core.models.article import article_response
 
 
@@ -47,97 +88,15 @@ def get_news_articles_everything(api_key, keyword=None, sources=None, domains=No
     return new_articles_response_list
 
 
-def get_news_articles_with_keyword(keyword, date_from, date_to, sort_by):
+def get_sources(api_key, language='en'):
     """
-    Gets all news articles based on the arguments provided.
-
-    :param keyword: Articles retrieved will be based on this keyword.
-    :param date_from: Articles that were written on or after this date are retrieved.
-    :param date_to: Articles that were written on or before this date are retrieved.
-    :param sort_by: How articles are sorted. (relevancy, popularity, publishedAt)
-    :return: List of articles retrieved in JSON form.
-    """
-
-    api_key = settings.CONFIG["VARIABLES"]["API_KEY"]
-    url = ('https://newsapi.org/v2/everything?'
-           f'q={keyword}&'
-           f'from={date_from}&'
-           f'to={date_to}&'
-           f'sort_by={sort_by}&'
-           f'apiKey={api_key}')
-
-    response = requests.get(url).json()
-    new_articles_response = article_response.ArticleResponse(response['status'], response['articles'])
-
-    return new_articles_response
-
-
-def get_news_articles_by_domains(keyword, domains, date_from, date_to, sort_by):
-    """
-    Gets all news articles based on the arguments provided.
-
-    :param keyword: Articles retrieved will be based on this keyword.
-    :param domains: Sources to retrieve articles from.
-    :param date_from: Articles that were written on or after this date are retrieved.
-    :param date_to: Articles that were written on or before this date are retrieved.
-    :param sort_by: How articles are sorted. (relevancy, popularity, publishedAt)
-    :return: List of articles retrieved in JSON form.
-    """
-
-    api_key = settings.VARIABLES["api_key"]
-    url = ('https://newsapi.org/v2/everything?'
-           f'q={keyword}&'
-           f'domains={domains}'
-           f'from={date_from}&'
-           f'to={date_to}&'
-           f'sort_by={sort_by}&'
-           f'apiKey={api_key}')
-
-    response = requests.get(url).json()
-    new_articles_response = article_response.ArticleResponse(response['status'], response['articles'])
-
-    return new_articles_response
-
-
-def get_news_articles_by_language(keyword, domains, date_from, date_to, language, sort_by):
-    """
-    Gets all news articles based on the arguments provided, including the language.
-
-    :param keyword: Articles retrieved will be based on this keyword.
-    :param domains: Sources to retrieve articles from.
-    :param date_from: Articles that were written on or after this date are retrieved.
-    :param date_to: Articles that were written on or before this date are retrieved.
-    :param language: 2-letter ISO-639-1 code for language of articles.
-    :param sort_by: How articles are sorted. (relevancy, popularity, publishedAt)
-    :return: List of articles retrieved in JSON form.
-    """
-
-    api_key = settings.VARIABLES["api_key"]
-    url = ('https://newsapi.org/v2/sources?'
-           f'q={keyword}&'
-           f'domains={domains}'
-           f'from={date_from}&'
-           f'to={date_to}&'
-           f'language={language}'
-           f'sort_by={sort_by}&'
-           f'apiKey={api_key}')
-
-    response = requests.get(url).json()
-    new_articles_response = article_response.ArticleResponse(response['status'], response['articles'])
-
-    return new_articles_response
-
-
-def get_sources():
-    """
-        Gets all news articles based on the arguments provided, including the language.
+        Gets all sources from the api.
 
         :return: List of sources retrieved in JSON form.
     """
 
-    api_key = settings.VARIABLES["api_key"]
     url = ('https://newsapi.org/v2/sources?'
-           f'language=en&'
+           f'language={language}&'
            f'apiKey={api_key}')
 
     response = requests.get(url).json()
