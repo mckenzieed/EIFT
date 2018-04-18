@@ -1,9 +1,5 @@
-import eift.core.news_api.news_api
-from datetime import datetime, timedelta
 from eift import settings
-import eift.core.database as db_api
-from eift.core.news_api import news_api
-from eift.core.database import news_articles
+from eift.api.database import news_articles
 
 
 def main():
