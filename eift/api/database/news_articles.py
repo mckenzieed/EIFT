@@ -122,7 +122,7 @@ class NewsArticles:
         sources_string = source_helpers.get_source_name_list(source_list)
         article_response_list = news_api.get_news_articles_everything(api_key=api_key, date_from=last_hour,
                                                                       date_to=datetime.now(), sources=sources_string,
-                                                                      language="en")
+                                                                      language="en") 
 
         try:
             conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
