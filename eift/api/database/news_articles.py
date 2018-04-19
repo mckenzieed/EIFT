@@ -5,11 +5,12 @@ from eift.api.database.news_article_sources import NewsSources
 from eift.api.database.models import meta_article
 from eift.api.news_api import news_api
 from eift.api.database.helpers import source_helpers
+from eift.api.database.helpers import article_helpers
 
 
 class NewsArticles:
     @staticmethod
-    def get_all_news_articles():
+    def get_news_articles(sources=None, authors=None, keyword=None, date_from=None, date_to=None):
         """
         Returns all news articles in the database
 
@@ -19,16 +20,21 @@ class NewsArticles:
         try:
             conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
+            where_clause_attributes = article_helpers.build_where_clause(sources, authors, keyword, date_from, date_to)
+            where_clause = where_clause_attributes[0]
+            arguments_used = where_clause_attributes[1]
 
-            query = ("SELECT id, source, author, title, description, url, urlToImage, datePublished "
-                     "FROM article_collection "
+            query = ("SELECT id, source, fk_source_id, author, title, description, url, urlToImage, datePublished "
+                     "FROM article_collection ac "
+                     "JOIN article_sources as on ac.fk_source_id = as.id "
+                     + where_clause +
                      "ORDER BY datePublished DESC")
 
             cursor.execute(query)
 
             article_list = []
-            for (db_id, source, author, title, description, url, urlToImage, datePublished) in cursor:
-                new_meta_article = meta_article.MetaArticle(db_id, source, author, title, description,
+            for (db_id, source, source_db_id, author, title, description, url, urlToImage, datePublished) in cursor:
+                new_meta_article = meta_article.MetaArticle(db_id, source_db_id, source, author, title, description,
                                                             url, urlToImage, datePublished)
                 article_list.append(new_meta_article)
 
@@ -122,7 +128,7 @@ class NewsArticles:
         sources_string = source_helpers.get_source_name_list(source_list)
         article_response_list = news_api.get_news_articles_everything(api_key=api_key, date_from=last_hour,
                                                                       date_to=datetime.now(), sources=sources_string,
-                                                                      language="en") 
+                                                                      language="en")
 
         try:
             conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
