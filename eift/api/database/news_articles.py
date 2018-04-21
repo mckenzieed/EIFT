@@ -20,17 +20,17 @@ class NewsArticles:
         try:
             conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
-            where_clause_attributes = article_helpers.build_where_clause(sources, authors, keyword, date_from, date_to)
-            where_clause = where_clause_attributes[0]
-            arguments_used = where_clause_attributes[1]
+            where_clause = article_helpers.build_where_clause(sources, authors, keyword, date_from, date_to)
+            parameters = article_helpers.get_parameter_object(sources, authors, keyword, date_from, date_to)
 
-            query = ("SELECT id, source, fk_source_id, author, title, description, url, urlToImage, datePublished "
+            query = ("SELECT ac.id, ac.source, ac.fk_source_id, ac.author, ac.title, ac.description, ac.url, "
+                     "ac.urlToImage, ac.datePublished "
                      "FROM article_collection ac "
-                     "JOIN article_sources as on ac.fk_source_id = as.id "
+                     "JOIN article_sources a on ac.fk_source_id = a.id "
                      + where_clause +
                      "ORDER BY datePublished DESC")
 
-            cursor.execute(query)
+            cursor.execute(query, parameters)
 
             article_list = []
             for (db_id, source, source_db_id, author, title, description, url, urlToImage, datePublished) in cursor:
@@ -135,11 +135,12 @@ class NewsArticles:
             cursor = conn.cursor()
 
             query = ("INSERT INTO article_collection "
-                     "(source, author, title, description, url, urlToImage, datePublished) "
+                     "(source, fk_source_id, author, title, description, url, urlToImage, datePublished) "
                      "VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
             for article_response in article_response_list:
                 for article in article_response.articles:
+                    source_id = (source for source in source_list if source.name == article.source.name)
                     try:
                         cursor.execute(query, (article.source.name, article.author, article.title,
                                                article.description, article.url, article.url_to_image,

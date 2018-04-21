@@ -1,38 +1,38 @@
 def build_where_clause(sources, authors, keywords, date_from, date_to):
     where_clause = "WHERE "
-    arguments_used = []
+    need_where_clause = False
     if sources is not None and isinstance(sources, list):
-        arguments_used.append("sources")
+        need_where_clause = True
         for source in sources:
-            where_clause += 'source LIKE %s OR '
-        where_clause += 'AND '
+            where_clause += 'ac.source = %s OR '
+        where_clause = where_clause[0:-3] + 'AND '
 
     if authors is not None and isinstance(sources, list):
-        arguments_used.append("authors")
+        need_where_clause = True
         for author in authors:
-            where_clause += 'author LIKE %s OR '
-        where_clause += 'AND '
+            where_clause += 'ac.author = %s OR '
+        where_clause = where_clause[0:-3] + 'AND '
 
     if keywords is not None and isinstance(keywords, list):
-        arguments_used.append("keywords")
+        need_where_clause = True
         for keyword in keywords:
-            where_clause += 'description LIKE %s OR '
-        where_clause += 'AND '
+            where_clause += 'ac.description LIKE %s OR '
+        where_clause = where_clause[0:-3] + 'AND '
 
     if date_from is not None:
-        arguments_used.append("date_from")
-        where_clause += 'datePublished > %s AND '
+        need_where_clause = True
+        where_clause += 'ac.datePublished > %s AND '
 
     if date_to is not None:
-        arguments_used.append("date_to")
-        where_clause += 'datePublished < %s AND '
+        need_where_clause = True
+        where_clause += 'ac.datePublished < %s AND '
 
-    if arguments_used.__len__() > 0:
-        where_clause = where_clause[0:where_clause.__len__()-5]
+    if need_where_clause:
+        where_clause = where_clause[0:-5]
     else:
         where_clause = ''
 
-    return [where_clause, arguments_used]
+    return where_clause
 
 
 def get_parameter_object(sources, authors, keywords, date_from, date_to):
@@ -43,22 +43,17 @@ def get_parameter_object(sources, authors, keywords, date_from, date_to):
 
     if authors is not None and isinstance(sources, list):
         for author in authors:
-            data.append(au)
+            data.append(author)
 
     if keywords is not None and isinstance(keywords, list):
         for keyword in keywords:
-            where_clause += 'description LIKE %s OR '
-        where_clause += 'AND '
+            data.append("%" + keyword + "%")
 
     if date_from is not None:
-        where_clause += 'datePublished > %s AND '
+        data.append(date_from)
 
     if date_to is not None:
-        where_clause += 'datePublished < %s AND '
+        data.append(date_to)
 
-    if arguments_used.__len__() > 0:
-        where_clause = where_clause[0:where_clause.__len__() - 5]
-    else:
-        where_clause = ''
 
-    return [where_clause, arguments_used]
+    return data

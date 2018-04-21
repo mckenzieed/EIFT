@@ -4,7 +4,7 @@ from eift.api.models.source.source import Source
 class MetaSource(Source):
     """A class representing a news source (cnn.com, abcnews.com, etc.) from the database"""
 
-    def __init__(self, db_id, source_db_id, source_id, name, description, url, category, language, country, active):
+    def __init__(self, db_id, source_id, name, description, url, category, language, country, active):
         """
         Initialize an article.
 
@@ -19,5 +19,4 @@ class MetaSource(Source):
         """
         super().__init__(source_id, name, description, url, category, language, country, active)
         self.db_id = db_id
-        self.source_db_id = source_db_id
 
