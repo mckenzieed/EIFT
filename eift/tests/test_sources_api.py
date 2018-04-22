@@ -1,6 +1,5 @@
 from eift.api.database.news_article_sources import NewsSources
 import mysql.connector as db_connection
-from datetime import datetime, timedelta
 from eift import settings
 import os
 
