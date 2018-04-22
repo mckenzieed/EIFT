@@ -1,4 +1,4 @@
-import eift.api.news_api.news_api as news_api
+import eift.news_api.news_api as news_api
 from datetime import datetime, timedelta
 from eift import settings
 import os

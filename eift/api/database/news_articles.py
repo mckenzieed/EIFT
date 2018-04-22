@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from eift import settings
 from eift.api.database.news_article_sources import NewsSources
 from eift.api.database.models import meta_article
-from eift.api.news_api import news_api
+from eift.news_api import news_api
 from eift.api.database.helpers import source_helpers
 from eift.api.database.helpers import article_helpers
 
@@ -136,13 +136,13 @@ class NewsArticles:
 
             query = ("INSERT INTO article_collection "
                      "(source, fk_source_id, author, title, description, url, urlToImage, datePublished) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
             for article_response in article_response_list:
                 for article in article_response.articles:
-                    source_id = (source for source in source_list if source.name == article.source.name)
+                    source_id = [source.db_id for source in source_list if source.name == article.source.name][0]
                     try:
-                        cursor.execute(query, (article.source.name, article.author, article.title,
+                        cursor.execute(query, (article.source.name, source_id, article.author, article.title,
                                                article.description, article.url, article.url_to_image,
                                                datetime.strptime(article.date_published, "%Y-%m-%dT%H:%M:%SZ")))
                     except db_connection.Error as err:

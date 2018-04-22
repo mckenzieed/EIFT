@@ -1,7 +1,7 @@
 import mysql.connector as db_connection
 from eift import settings
 from eift.api.database.models import meta_source
-from eift.api.news_api import news_api
+from eift.news_api import news_api
 from eift.api.database.helpers import source_helpers
 
 

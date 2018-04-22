@@ -1,5 +1,3 @@
-
-
 def get_sources_to_insert(source_list_from_api, source_list_in_database):
     """
     Compares a source list from the api and database and finds sources that are in the api, but not the database.
