@@ -1,0 +1,12 @@
+{
+  "VARIABLES": {
+    "API_KEY": "2b7d70632f0149b4b8e38e5ade0aa88e"
+  },
+  "DBVARIABLES": {
+    "USER": "eift_developer",
+    "PASSWORD": "Eiftdev!0415",
+    "HOST": "99.20.124.56",
+    "PORT": "25000",
+    "DATABASE": "eift_articles"
+  }
+}

@@ -1371,7 +1371,7 @@ def _setup(_bootstrap_module):
     """Setup the path-based importers for importlib by importing needed
     built-in modules and injecting them into the global namespace.
 
-    Other components are extracted from the core bootstrap module.
+    Other components are extracted from the api bootstrap module.
 
     """
     global sys, _imp, _bootstrap

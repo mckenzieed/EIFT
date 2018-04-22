@@ -1,0 +1,7 @@
+README.md
+conf.py
+setup.py
+EIFT.egg-info/PKG-INFO
+EIFT.egg-info/SOURCES.txt
+EIFT.egg-info/dependency_links.txt
+EIFT.egg-info/top_level.txt

@@ -28,7 +28,7 @@
            circular uniform
            von Mises
 
-General notes on the underlying Mersenne Twister core generator:
+General notes on the underlying Mersenne Twister api generator:
 
 * The period is 2**19937-1.
 * It is one of the most extensively tested generators in existence.
@@ -64,7 +64,7 @@ RECIP_BPF = 2**-BPF
 
 # Translated by Guido van Rossum from C source provided by
 # Adrian Baddeley.  Adapted by Raymond Hettinger for use with
-# the Mersenne Twister  and os.urandom() core generators.
+# the Mersenne Twister  and os.urandom() api generators.
 
 import _random
 
@@ -152,7 +152,7 @@ class Random(_random.Random):
                              (version, self.VERSION))
 
 ## ---- Methods below this point do not need to be overridden when
-## ---- subclassing for the purpose of using a different core generator.
+## ---- subclassing for the purpose of using a different api generator.
 
 ## -------------------- pickle support  -------------------
 
