@@ -14,7 +14,7 @@ def main():
     #print(len(response.articles))
 
 
-    news_articles.NewsArticles.insert_articles()
+    #news_articles.NewsArticles.insert_articles()
    # news_articles.NewsArticles.get_news_articles(keyword=['Apple', 'HBO', 'Euro', 'Fox News'])
 
     # date_time = "2016-05-05T19:05:05Z"

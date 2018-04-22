@@ -4,3 +4,4 @@
 .venv-ELaptop/
 venv/
 eift/configurations/dev_config_ethan.json
+__pycache__/

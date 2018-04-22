@@ -7,7 +7,7 @@ from eift.api.database.helpers import source_helpers
 
 class NewsSources:
     @staticmethod
-    def get_all_sources():
+    def get_all_sources(conn):
         """
         Gets all news sources in the database.
 
@@ -15,7 +15,6 @@ class NewsSources:
         """
 
         try:
-            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
 
             query = ("SELECT id, source_id, name, description, url, category, language, country, active "
@@ -32,22 +31,21 @@ class NewsSources:
                 source_list.append(new_meta_source)
 
             cursor.close()
-            conn.close()
 
             return source_list
         except db_connection.Error as err:
             print(err)
 
     @staticmethod
-    def insert_new_sources():
+    def insert_sources(conn):
         """Insert new round of sources (to be ran every so often to keep database updated)"""
 
-        source_list_from_api = news_api.get_sources()
-        source_list_in_database = NewsSources.get_all_sources()
+        api_key = settings.VARIABLES["api_key"]
+        source_list_from_api = news_api.get_sources(api_key)
+        source_list_in_database = NewsSources.get_all_sources(conn)
         sources_to_insert = source_helpers.get_sources_to_insert(source_list_from_api, source_list_in_database)
 
         try:
-            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
 
             query = ("INSERT INTO article_sources "
@@ -59,50 +57,23 @@ class NewsSources:
                                        source_to_insert.url, source_to_insert.category, source_to_insert.language,
                                        source_to_insert.language, source_to_insert.country, 1))
 
-            conn.commit()
             cursor.close()
-            conn.close()
 
         except db_connection.Error as err:
             print(err)
 
-    @staticmethod
-    def insert_sources():
-        """To be ran once to initialize eift_sources table in the eift_articles database"""
-
-        news_sources_from_api = news_api.get_sources()
-
-        try:
-            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
-            cursor = conn.cursor()
-
-            query = ("INSERT INTO article_sources "
-                     "(source_id, name, description, url, category, language, country, active) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
-
-            for entry in news_sources_from_api.sources:
-                new_source = (entry.source_id, entry.name, entry.description, entry.url, entry.category,
-                              entry.language, entry.country, entry.active)
-                cursor.execute(query, new_source)
-
-            conn.commit()
-            cursor.close()
-            conn.close()
-
-        except (db_connection.Error, RuntimeError, TypeError, NameError) as err:
-            print(err)
 
     @staticmethod
-    def set_sources_inactive():
+    def set_sources_inactive(conn):
         """Sets sources that no longer exist as inactive."""
 
-        source_list_from_api = news_api.get_sources()
-        source_list_in_database = NewsSources.get_all_sources()
+        api_key = settings.VARIABLES["api_key"]
+        source_list_from_api = news_api.get_sources(api_key)
+        source_list_in_database = NewsSources.get_all_sources(conn)
         sources_to_set_inactive = source_helpers.get_sources_to_set_inactive(source_list_from_api,
                                                                              source_list_in_database)
 
         try:
-            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
 
             query = ("UPDATE article_sources "
@@ -114,37 +85,34 @@ class NewsSources:
             for source_to_set_inactive in sources_to_set_inactive:
                 cursor.execute(query, (source_to_set_inactive,))
 
-            conn.commit()
             cursor.close()
-            conn.close()
 
         except db_connection.Error as err:
             print(err)
 
     @staticmethod
-    def update_sources():
+    def update_sources(conn):
         """Update sources who have information that has changed."""
 
-        source_list_from_api = news_api.get_sources()
-        source_list_in_database = NewsSources.get_all_sources()
-        sources_to_insert = source_helpers.get_sources_to_insert(source_list_from_api, source_list_in_database)
+        api_key = settings.VARIABLES["api_key"]
+        source_list_from_api = news_api.get_sources(api_key)
+        source_list_in_database = NewsSources.get_all_sources(conn)
+        sources_to_update = source_helpers.get_sources_to_update(source_list_from_api, source_list_in_database)
 
         try:
-            conn = db_connection.connect(**settings.EIFT_ARTICLES_CONNECTION)
             cursor = conn.cursor()
 
-            query = ("INSERT INTO article_sources "
-                     "(source_id, name, description, url, category, language, country, active) "
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+            query = ("UPDATE article_sources "
+                     "SET source_id = %s, name = %s, description = %s, "
+                     "url = %s, category = %s, language = %s, country = %s "
+                     "WHERE id = %s")
 
-            for source_to_insert in sources_to_insert:
-                cursor.execute(query, (source_to_insert.source_id, source_to_insert.name, source_to_insert.description,
-                                       source_to_insert.url, source_to_insert.category, source_to_insert.language,
-                                       source_to_insert.language, source_to_insert.country, 1))
+            for source_to_update in sources_to_update:
+                cursor.execute(query, (source_to_update.source_id, source_to_update.name, source_to_update.description,
+                                       source_to_update.url, source_to_update.category, source_to_update.language,
+                                       source_to_update.country, sources_to_update.db_id))
 
-            conn.commit()
             cursor.close()
-            conn.close()
 
         except db_connection.Error as err:
             print(err)
