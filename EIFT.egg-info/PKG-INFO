@@ -1,7 +1,7 @@
 Metadata-Version: 1.0
 Name: EIFT
 Version: 0.0.1
-Summary: News/user submitted content website
+Summary: News article and sources core repo to be used by other packages.
 Home-page: UNKNOWN
 Author: Ethan
 Author-email: mckenzieed@gmail.com
