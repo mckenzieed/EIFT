@@ -1,0 +1,7 @@
+README.md
+setup.py
+EIFT_Core.egg-info/PKG-INFO
+EIFT_Core.egg-info/SOURCES.txt
+EIFT_Core.egg-info/dependency_links.txt
+EIFT_Core.egg-info/requires.txt
+EIFT_Core.egg-info/top_level.txt

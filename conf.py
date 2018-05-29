@@ -14,19 +14,18 @@
 #
 import os
 import sys
-sys.path.append(os.path.abspath('./eift/'))
-
+sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'EIFT'
+project = 'EIFT-Core'
 copyright = '2018, Ethan'
 author = 'Ethan'
 
 # The short X.Y version
-version = ''
+version = '1.0.0'
 # The full version, including alpha/beta/rc tags
-release = ''
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -66,7 +65,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'eift/Lib/site-packages', 'venv/Lib/site-packages']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'eift_core/Lib/site-packages', 'venv/Lib/site-packages']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -77,7 +76,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -88,7 +87,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_build\html\_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -104,7 +103,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'EIFTdoc'
+htmlhelp_basename = 'EIFTCoredoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -131,7 +130,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'EIFT.tex', 'EIFT Documentation',
+    (master_doc, 'EIFT-Core.tex', 'EIFT-Core Documentation',
      'Ethan', 'manual'),
 ]
 
@@ -141,7 +140,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'eift', 'EIFT Documentation',
+    (master_doc, 'eift_core', 'EIFT-Core Documentation',
      [author], 1)
 ]
 
@@ -152,8 +151,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'EIFT', 'EIFT Documentation',
-     author, 'EIFT', 'One line description of project.',
+    (master_doc, 'EIFT-Core', 'EIFT-Core Documentation',
+     author, 'EIFT-Core', 'One line description of project.',
      'Miscellaneous'),
 ]
 

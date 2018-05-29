@@ -3,16 +3,30 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to EIFT's documentation!
-================================
+Welcome to EIFT-Core's documentation!
+=====================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-EIFT API Reference
+EIFT-Core Reference
 ===================
 
-.. automodule:: api
-   :members:
+Articles
+--------
 
+.. autoclass:: eift_core.api.database.news_articles.NewsArticles
+    :members:
+
+Sources
+-------
+
+.. autoclass:: eift_core.api.database.news_article_sources.NewsSources
+    :members:
+
+News-api Reference
+==================
+
+.. automodule:: eift_core.news_api.news_api
+    :members:
