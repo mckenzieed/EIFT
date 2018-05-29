@@ -2,5 +2,6 @@
 .pytest_cache/
 venv/
 dist/
-EIFT.egg-info/
 docs/
+_build/
+EIFT-Core.egg-info/
