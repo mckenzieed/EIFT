@@ -4,4 +4,4 @@ venv/
 dist/
 docs/
 _build/
-EIFT-Core.egg-info/
+EIFT_Core.egg-info/
