@@ -1,8 +1,0 @@
-[
-  "eift/tests/test_articles_api.py::test_get_news_articles",
-  "eift/tests/test_articles_api.py::test_insert_articles",
-  "eift/tests/test_sources_api.py::test_get_sources",
-  "eift/tests/test_sources_api.py::test_insert_sources",
-  "eift/tests/test_sources_api.py::test_update_sources",
-  "eift/tests/test_sources_api.py::test_set_sources_inactive"
-]
