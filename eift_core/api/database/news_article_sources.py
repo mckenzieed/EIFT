@@ -37,10 +37,9 @@ class NewsSources:
             print(err)
 
     @staticmethod
-    def _insert_sources(conn):
+    def insert_sources(conn, api_key):
         """Insert new round of sources (to be ran every so often to keep database updated)"""
 
-        api_key = settings.VARIABLES["api_key"]
         source_list_from_api = news_api.get_sources(api_key)
         source_list_in_database = NewsSources.get_all_sources(conn)
         sources_to_insert = source_helpers.get_sources_to_insert(source_list_from_api, source_list_in_database)
@@ -64,10 +63,9 @@ class NewsSources:
 
 
     @staticmethod
-    def _set_sources_inactive(conn):
+    def set_sources_inactive(conn, api_key):
         """Sets sources that no longer exist as inactive."""
 
-        api_key = settings.VARIABLES["api_key"]
         source_list_from_api = news_api.get_sources(api_key)
         source_list_in_database = NewsSources.get_all_sources(conn)
         sources_to_set_inactive = source_helpers.get_sources_to_set_inactive(source_list_from_api,
@@ -91,10 +89,9 @@ class NewsSources:
             print(err)
 
     @staticmethod
-    def _update_sources(conn):
+    def update_sources(conn, api_key):
         """Update sources who have information that has changed."""
 
-        api_key = settings.VARIABLES["api_key"]
         source_list_from_api = news_api.get_sources(api_key)
         source_list_in_database = NewsSources.get_all_sources(conn)
         sources_to_update = source_helpers.get_sources_to_update(source_list_from_api, source_list_in_database)
